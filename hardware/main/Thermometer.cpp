@@ -2,11 +2,6 @@
 #include "Thermometer.h"
 #include <Wire.h>
 
-//Default Constructor
-/*Thermometer::Thermometer{
-  }*/
-
-//Constructor with Pin/Address Parameter
 Thermometer::Thermometer() {
 }
 
@@ -27,6 +22,6 @@ void Thermometer::setupEmissivity(double emss){
     mlx.writeEmissivity(emss);
 }
 
-uint16_t Thermometer::readEmiss(){
+double Thermometer::readEmiss(){
     return mlx.readEmissivity();
 }

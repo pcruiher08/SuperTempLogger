@@ -12,7 +12,7 @@ class Thermometer {
    float getTemperature();
    float getAmbientTemperature();
    void setupEmissivity(double emms);
-   uint16_t readEmiss();
+   double readEmiss();
 
   private:
     Adafruit_MLX90614 mlx = Adafruit_MLX90614();

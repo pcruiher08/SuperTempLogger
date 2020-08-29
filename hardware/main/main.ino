@@ -11,7 +11,7 @@ void setup(){
     pan.attach(9);
     tilt.attach(10);
     
-    therm.initialize(0x5B);
+    therm.initialize(0x5D);
     therm.setupEmissivity(0.78);
 }
 
