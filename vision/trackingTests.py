@@ -55,7 +55,7 @@ for res in tracker.getForeheadStream():
     
 
 if temperatureIsReady:
-    pload = {'record':{'code':uuidCode, 'group':"5f4af874a8ed837950ee0d16", 'temp':lectura}}
+    pload = {'record':{'code':uuidCode, 'group':"5f4b4120ff6edc628064d9c3", 'temp':lectura}}
     try:
         r = requests.post(endp, data = json.dumps(pload), headers = headers)
 
