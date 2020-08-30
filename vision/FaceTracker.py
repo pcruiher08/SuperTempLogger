@@ -34,7 +34,7 @@ class FaceTracker:
 
             # Write text on the image 
             print("show")
-            cv2.putText(frame, 'SHOW YOUR QR CODE', (frameShape[0]//3, 50), self.font, 1,(0,0,0), 5)
+            cv2.putText(frame, 'SHOW YOUR QR CODE', (frameShape[0]//3, 50), self.font, 1,(255,255,255), 3)
 
             decodedText, points, _ = qrCodeDetector.detectAndDecode(frame)
             
@@ -83,7 +83,7 @@ class FaceTracker:
                 cv2.ellipse(frame,   (x+w, y), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
                 
                 # Frente
-                cv2.ellipse(frame,   (int(x+w/2), y+2*radioCirculo), (int(radioCirculo*1.3), int(radioCirculo*1.3)), 0,0,360,(0,0,255),2)
+                cv2.ellipse(frame,   (int(x+w/2), y+2*radioCirculo), (int(radioCirculo*1.3), int(radioCirculo*1.3)), 0,0,360,(0,0,255),3)
 
                 foreheadPosition = (int(x+w/2), y+2*radioCirculo)
                 yield foreheadPosition
@@ -92,8 +92,8 @@ class FaceTracker:
             if anterior != len(faces):
                 anterior = len(faces)
                 log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
+            cv2.putText(frame, 'PLEASE LOOK AT THE CAMERA', (frame.shape[0]//3 - 30, 50), self.font, 1,(255,255,255), 3)
 
-            cv2.putText(frame, 'PLEASE LOOK AT THE CAMERA', (frame.shape[0]//3 - 30, 50), self.font, 1,(0,0,0), 5)
             cv2.imshow('Video', frame)
 
         
