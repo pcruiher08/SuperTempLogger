@@ -11,6 +11,12 @@ const User = new Schema({
 	code: String,
 	active: Boolean,
 	admin: Boolean,
+	groups: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "Group",
+		},
+	],
 });
 
 User.plugin(passportLocalMongoose, {
@@ -23,12 +29,11 @@ User.plugin(passportLocalMongoose, {
 	},
 });
 
-const Users = mongoose.model("user", User, "users");
+const Users = mongoose.model("User", User, "Users");
 
 passport.use(Users.createStrategy());
 
 passport.serializeUser(Users.serializeUser());
 passport.deserializeUser(Users.deserializeUser());
-
 
 module.exports = Users;
