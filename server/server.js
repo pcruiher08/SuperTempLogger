@@ -22,11 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressSession);
 app.use(cors());
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-	console.log(`Server started on PORt ${port}`);
-});
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -45,9 +40,16 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === "development") {
 	});
 } else {
 	app.use(express.static(path.join(__dirname, "../build")));
-	app.all("/*", (req, res) => {
-		if (req.originalUrl !== "/login")
+	app.get("*", (req, res) => {
+		if (req.path !== "/login")
 			res.sendFile(path.resolve(__dirname, "../build", "index.html"));
-		// res.sendFile(path.join(__dirname, "../build"));
+		else {
+			res.status(500).send('Not logged in');
+		}
 	});
 }
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+	console.log(`Server started on PORt ${port}`);
+});
