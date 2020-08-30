@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 const httpProxy = require("http-proxy");
 const User = require("./models/user");
 const userRouter = require("./routes/users");
+const groupRouter = require("./routes/groups");
 const proxy = httpProxy.createServer({});
 const app = express();
 
@@ -25,7 +26,6 @@ app.use(cors());
 
 // app.use(express.static(path.join(__dirname, "../build")));
 // app.get("/", (req, res) => {
-// 	console.log('epa')
 // 	res.sendFile(path.join(__dirname, "../build"));
 // });
 // app.get("/login", (req, res) => {
@@ -41,13 +41,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const dbUri =
-	"mongodb+srv://admin:admin@templogger.4dihh.mongodb.net/templogger?retryWrites=true&w=majority";
+	"mongodb+srv://admin:unsecreto@templogger.4dihh.mongodb.net/templogger?retryWrites=true&w=majority";
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use("/api/user", userRouter);
+app.use("/api/group", groupRouter);
 
 app.get("*", (req, res) => {
-	console.log(req.originalUrl);
 	// change to prod
 	if (req.originalUrl !== "/login")
 		proxy.web(req, res, { target: "http://localhost:3000/" });

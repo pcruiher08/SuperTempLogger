@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
+import { Button } from "antd";
 
 class Dashboard extends Component {
 	constructor(props) {
@@ -21,7 +22,16 @@ class Dashboard extends Component {
 			});
 	}
 	render() {
-		return <p>eres admin</p>;
+		return (
+			<div>
+				<Button
+					onClick={() => {
+					}}
+				>
+					Create group
+				</Button>
+			</div>
+		);
 	}
 }
 

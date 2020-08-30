@@ -5,14 +5,14 @@ const Users = require("../models/user");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 
-router.post("/login", (req, res, next) => {
+router.post("/login", (req, res) => {
 	passport.authenticate("local", (err, user, info) => {
 		if (err) {
-			return next(err);
+			throw err;
 		}
 
 		if (!user) {
-			return res.status(500).send("Usuario no existente");
+			return res.status(500).send("Unexistent user");
 		}
 
 		req.logIn(user, function (err) {
@@ -22,36 +22,46 @@ router.post("/login", (req, res, next) => {
 
 			return res.status(200).send("ok");
 		});
-	})(req, res, next);
+	})(req, res);
 });
 
 router.post("/signup", (req, res, next) => {
 	const { name, username, email, password } = req.body.user;
+	const response = {
+		code: 200,
+		msg: "Ok",
+	};
 	Users.register(
 		{ name, username, email, code: uuidv4(), admin: false, active: true },
 		password,
 		function (err, user) {
 			if (err) {
+				response.code = 500;
+				response.msg = err;
 				throw err;
 			}
 
 			var authenticate = Users.authenticate();
 			authenticate(user.username, password, function (err, result) {
 				if (err) {
-					throw err;
+					response.code = 500;
+					response.msg = "Authentication Error";
 				}
-				// Value 'result' is set to false. The user could not be authenticated since the user is not active
+				if (!result) {
+					response.code = 403;
+					response.msg = "Non activated user";
+				}
 			});
 
 			req.logIn(user, function (err) {
 				if (err) {
+					response.code = 500;
 					throw err;
 				}
-
-				return res.status(200);
 			});
 		}
 	);
+	return res.status(response.code).send(response.msg);
 });
 
 router.post(
@@ -67,16 +77,14 @@ router.post(
 			password,
 		} = req.body.updates;
 		const user = await Users.findOne({ username: username }).exec();
-		console.log(admin);
 		if (admin !== undefined) user.admin = admin;
 		if (newUsername !== undefined) user.username = newUsername;
 		if (admin !== undefined) user.admin = admin;
 		if (email !== undefined) user.email = email;
 		if (name !== undefined) user.name = name;
-		console.log(user);
 		if (password) {
-			user.setPassword(password, function () {
-				user.save();
+			await user.setPassword(password, async () => {
+				await user.save();
 			});
 		}
 		await user.save();
