@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import Login from "./pages/auth/Login";
 import App from "./pages/App";
