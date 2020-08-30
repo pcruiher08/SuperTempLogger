@@ -66,12 +66,12 @@ void loop(){
   //a mover servos
   //centro 280, 150
   if(x != 0){
-    thetaTilt += (x - 280) * 2;
+    thetaTilt = 90 + (x - 280) * 1;
     tilt.write(thetaTilt);
   }
 
   if(y != 0){
-    thetaPan += (y - 150) * 2;
+    thetaPan = (90 + (150 - y) * 1);
     pan.write(thetaPan); 
   }
   
