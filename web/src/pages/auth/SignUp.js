@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Form, Input, InputNumber, Button, Row, Col } from "antd";
+import { withRouter } from "react-router";
 
 const layout = {
 	labelCol: { span: 4 },
@@ -16,33 +17,36 @@ const validateMessages = {
 		range: "${label} must be between ${min} and ${max}",
 	},
 };
-export default class SignUp extends Component {
-	constructor(props) {
-		super(props);
-	}
+const SignUp = () => {
+	const [form] = Form.useForm();
+	const [success, setSuccess] = useState(false);
 
-	render() {
-		const onFinish = (values) => {
-			console.log(values);
-			fetch("/api/user/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(values),
+	const onFinish = (values) => {
+		console.log(values);
+		fetch("/api/user/signup", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(values),
+		})
+			.then((res) => {
+				if (res.status === 200) {
+					form.resetFields();
+					setSuccess(true);
+				}
 			})
-				.then((e) => {
-					console.log(e);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		};
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
-		return (
+	return (
+		<>
 			<Form
 				{...layout}
 				name="nest-messages"
+				form={form}
 				onFinish={onFinish}
 				validateMessages={validateMessages}
 			>
@@ -80,6 +84,9 @@ export default class SignUp extends Component {
 					</Button>
 				</Form.Item>
 			</Form>
-		);
-	}
-}
+			{success ? <p>Te registraste con éxito</p> : null}
+		</>
+	);
+};
+
+export default SignUp;

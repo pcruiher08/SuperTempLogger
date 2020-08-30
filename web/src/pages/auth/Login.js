@@ -36,21 +36,7 @@ class Login extends Component {
 				.then((e) => {
 					console.log(e);
 					if (e.status === 200) {
-						console.log("FETCHING");
-						const message = fetch("/validate", {
-							method: "POST",
-						}).then((res) => {
-							console.log(res);
-							console.log(this.props);
-							res.text()
-								.then((re) => {
-									console.log(re);
-									this.props.history.push("/user");
-								})
-								.catch((err) => {
-									console.log("<<<<<<", err);
-								});
-						});
+						this.props.history.push("/user");
 					}
 				})
 				.catch((err) => {
