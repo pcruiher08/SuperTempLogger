@@ -15,7 +15,7 @@ class Dashboard extends Component {
 				return response.json();
 			})
 			.then(function (data) {
-				console.log(data);
+				console.log('',data);
 				// if (data.username && !data.admin) {
 				// 	this.props.history.push("/user");
 				// }
