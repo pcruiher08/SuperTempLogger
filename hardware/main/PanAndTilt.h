@@ -1,4 +1,4 @@
-#ifndef PanAndTilt_h
+/*#ifndef PanAndTilt_h
 #define PanAndTilt_h
 
 #include <Servo.h>
@@ -13,3 +13,4 @@ class PanAndTilt {
 };
 
 #endif
+*/
