@@ -60,44 +60,42 @@ class FaceTracker:
         """
         This tracks the user's face, and returns the position of the forehead
         """
-        try:
-            anterior = 0
-            while self.tracking:
-                if not self.video_capture.isOpened():
-                    print('Unable to load camera.')
-                    sleep(5)
-                    pass
 
-                ret, frame = self.video_capture.read()
-                frame = cv2.flip(frame, 1)
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = self.faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        anterior = 0
+        while self.tracking:
+            if not self.video_capture.isOpened():
+                print('Unable to load camera.')
+                sleep(5)
+                pass
 
-
-                for (x, y, w, h) in faces:
-                    radioCirculo = int(w / 20)
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                    cv2.ellipse(frame,   (x, y), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
-                    cv2.ellipse(frame,   (x+w, y+h), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
-                    cv2.ellipse(frame,   (x, y+h), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
-                    cv2.ellipse(frame,   (x+w, y), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
-                    
-                    # Frente
-                    cv2.ellipse(frame,   (int(x+w/2), y+2*radioCirculo), (int(radioCirculo*1.3), int(radioCirculo*1.3)), 0,0,360,(0,0,255),2)
-
-                    foreheadPosition = (int(x+w/2), y+2*radioCirculo)
-                    yield foreheadPosition
+            ret, frame = self.video_capture.read()
+            frame = cv2.flip(frame, 1)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
 
-                if anterior != len(faces):
-                    anterior = len(faces)
-                    log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
+            for (x, y, w, h) in faces:
+                radioCirculo = int(w / 20)
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                cv2.ellipse(frame,   (x, y), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
+                cv2.ellipse(frame,   (x+w, y+h), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
+                cv2.ellipse(frame,   (x, y+h), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
+                cv2.ellipse(frame,   (x+w, y), (radioCirculo, radioCirculo), 0,0,360,(0,255,0),-1)
+                
+                # Frente
+                cv2.ellipse(frame,   (int(x+w/2), y+2*radioCirculo), (int(radioCirculo*1.3), int(radioCirculo*1.3)), 0,0,360,(0,0,255),2)
 
-                cv2.putText(frame, 'PLEASE LOOK AT THE CAMERA', (frame.shape[0]//3 - 30, 50), self.font, 1,(0,0,0), 5)
-                cv2.imshow('Video', frame)
+                foreheadPosition = (int(x+w/2), y+2*radioCirculo)
+                yield foreheadPosition
 
-            
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-        except:
-            print("class except")
+
+            if anterior != len(faces):
+                anterior = len(faces)
+                log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
+
+            cv2.putText(frame, 'PLEASE LOOK AT THE CAMERA', (frame.shape[0]//3 - 30, 50), self.font, 1,(0,0,0), 5)
+            cv2.imshow('Video', frame)
+
+        
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
