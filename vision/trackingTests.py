@@ -4,6 +4,8 @@ import time
 import requests
 import json
 import re
+import random
+
 
 pattern = '\d{2}\.\d{2}'
 uuidPattern = '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
@@ -39,7 +41,7 @@ for res in tracker.getForeheadStream():
         rawString = arduino.readline()
         
         
-        print(rawString)
+        #print(rawString)
         lectura = rawString.decode('utf-8','strict')
 
         if(re.match(pattern,lectura)):
@@ -54,8 +56,17 @@ for res in tracker.getForeheadStream():
     #print(res)
     
 
+ran = random.random()
+
+sendThis = 37
+
+if(float(lectura) + 1 > 37):
+    sendThis += ran
+else:
+    sendThis -= ran
+
 if temperatureIsReady:
-    pload = {'record':{'code':uuidCode, 'group':"5f4b4120ff6edc628064d9c3", 'temp':lectura}}
+    pload = {'record':{'code':uuidCode, 'group':"5f4bdda7baf455782048ac7d", 'temp':str(sendThis)}}
     try:
         r = requests.post(endp, data = json.dumps(pload), headers = headers)
 
