@@ -92,9 +92,18 @@ router.post(
 	}
 );
 
-router.post("/data", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-	const { username, code, name, email, admin } = req.user;
-	return res.json({ username, code, name, email, admin });
+router.post("/data", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+	const { username, code, name, email, admin, groups } = req.user;
+	const result = await Users.findOne({ username }).populate("groups").exec();
+	console.log(result);
+	return res.json({
+		username: result.username,
+		code: result.code,
+		name: result.name,
+		email: result.email,
+		admin: result.admin,
+		groups: result.groups,
+	});
 });
 
 module.exports = router;

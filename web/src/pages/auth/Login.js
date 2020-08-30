@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Form, Input, InputNumber, Button, Row, Col } from "antd";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router";
+import { Form, Input, InputNumber, Button, Row, Col, Typography } from "antd";
+const { Title, Text } = Typography;
 
 const layout = {
-	labelCol: { span: 4 },
-	wrapperCol: { span: 20 },
+	labelCol: { span: 5, offset: 2 },
+	wrapperCol: { span: 12 },
 };
 
 const validateMessages = {
@@ -45,32 +46,37 @@ class Login extends Component {
 		};
 
 		return (
-			<Form
-				{...layout}
-				name="nest-messages"
-				onFinish={onFinish}
-				validateMessages={validateMessages}
-			>
-				<Form.Item
-					name={["user", "username"]}
-					label="Username"
-					rules={[{ required: true }]}
+			<div style={{ padding: "24px" }}>
+				<div style={{ textAlign: "center" }}>
+					<Title level={3}>Inicia Sesión </Title>
+				</div>
+				<Form
+					{...layout}
+					name="nest-messages"
+					onFinish={onFinish}
+					validateMessages={validateMessages}
 				>
-					<Input />
-				</Form.Item>
-				<Form.Item
-					name={["user", "password"]}
-					label="Password"
-					rules={[{ required: true }]}
-				>
-					<Input />
-				</Form.Item>
-				<Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-					<Button type="primary" htmlType="submit">
-						Submit
-					</Button>
-				</Form.Item>
-			</Form>
+					<Form.Item
+						name={["user", "username"]}
+						label="Nombre de usuario"
+						rules={[{ required: true }]}
+					>
+						<Input />
+					</Form.Item>
+					<Form.Item
+						name={["user", "password"]}
+						label="Contraseña"
+						rules={[{ required: true }]}
+					>
+						<Input.Password />
+					</Form.Item>
+					<Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 7 }}>
+						<Button type="primary" htmlType="submit">
+							Submit
+						</Button>
+					</Form.Item>
+				</Form>
+			</div>
 		);
 	}
 }

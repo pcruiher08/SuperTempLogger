@@ -1,7 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
-import { Form, Input, InputNumber, Button, Row, Col, Space } from "antd";
+import { Form, Input, InputNumber, Button, Row, Col, Typography } from "antd";
 import { useHistory } from "react-router-dom";
 import QRCode from "qrcode.react";
+const { Title, Text, Paragraph } = Typography;
 
 const User = () => {
 	const [userData, setUserData] = useState({});
@@ -27,42 +28,46 @@ const User = () => {
 	return (
 		<Row>
 			<Col span={12} offset={6}>
-				<QRCode value={userData.code} />
-				<p>{userData.name}</p>
-				<p>{userData.username}</p>
-				<p>{userData.email}</p>
-				<button
-					onClick={() => {
-						fetch("/api/user/update", {
-							method: "post",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({
-								updates: {
-									admin: true,
-								},
-							}),
-						})
-							.then(function (response) {
-								console.log(response);
-							})
-							.catch((err) => {
-								console.log(err);
-							});
-					}}
-				>
-					become an admin
-				</button>
-				{userData.admin ? (
+				<div style={{ textAlign: "center", padding: "24px" }}>
+					<QRCode value={userData.code} size={256} />
+					<Paragraph>Nombre: {userData.name}</Paragraph>
+					<Paragraph>
+						Nombre de usuario: {userData.username}
+					</Paragraph>
+					<Paragraph>Email: {userData.email}</Paragraph>
 					<button
 						onClick={() => {
-							history.push("/dashboard");
+							fetch("/api/user/update", {
+								method: "post",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify({
+									updates: {
+										admin: true,
+									},
+								}),
+							})
+								.then(function (response) {
+									console.log(response);
+								})
+								.catch((err) => {
+									console.log(err);
+								});
 						}}
 					>
-						Ve a dashboard
+						become an admin
 					</button>
-				) : null}
+					{userData.admin ? (
+						<button
+							onClick={() => {
+								history.push("/dashboard");
+							}}
+						>
+							Ve a dashboard
+						</button>
+					) : null}
+				</div>
 			</Col>
 		</Row>
 	);

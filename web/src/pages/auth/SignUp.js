@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Form, Input, InputNumber, Button, Row, Col } from "antd";
+import { Form, Input, InputNumber, Button, Row, Col, Typography } from "antd";
 import { withRouter } from "react-router";
+const { Title, Text } = Typography;
 
 const layout = {
-	labelCol: { span: 4 },
-	wrapperCol: { span: 20 },
+	labelCol: { span: 5, offset: 2 },
+	wrapperCol: { span: 12 },
 };
 
 const validateMessages = {
@@ -42,7 +43,10 @@ const SignUp = () => {
 	};
 
 	return (
-		<>
+		<div style={{ padding: "24px" }}>
+			<div style={{ textAlign: "center" }}>
+				<Title level={3}>Registrate</Title>
+			</div>
 			<Form
 				{...layout}
 				name="nest-messages"
@@ -52,14 +56,14 @@ const SignUp = () => {
 			>
 				<Form.Item
 					name={["user", "name"]}
-					label="Name"
+					label="Nombre"
 					rules={[{ required: true }]}
 				>
 					<Input />
 				</Form.Item>
 				<Form.Item
 					name={["user", "username"]}
-					label="Username"
+					label="Nombre de usuario"
 					rules={[{ required: true }]}
 				>
 					<Input />
@@ -73,19 +77,19 @@ const SignUp = () => {
 				</Form.Item>
 				<Form.Item
 					name={["user", "password"]}
-					label="Password"
+					label="Contraseña"
 					rules={[{ required: true }]}
 				>
-					<Input />
+					<Input.Password />
 				</Form.Item>
-				<Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+				<Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 7 }}>
 					<Button type="primary" htmlType="submit">
 						Submit
 					</Button>
 				</Form.Item>
 			</Form>
-			{success ? <p>Te registraste con éxito</p> : null}
-		</>
+			{success ? <Text>Te registraste con éxito</Text> : null}
+		</div>
 	);
 };
 

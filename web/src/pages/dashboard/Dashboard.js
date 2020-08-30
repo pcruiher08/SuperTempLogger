@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Button, Modal, Form, Input, Radio, Select } from "antd";
+import {
+	Button,
+	Modal,
+	Form,
+	Input,
+	Radio,
+	Typography,
+	Select,
+	Layout,
+	Menu,
+	Breadcrumb,
+	Table,
+	Tag
+} from "antd";
+import {
+	UserOutlined,
+	LaptopOutlined,
+	NotificationOutlined,
+} from "@ant-design/icons";
 import { json } from "body-parser";
-const { Option } = Select;
-
-function handleChange(value) {
-	console.log(`selected ${value}`);
-}
+const { SubMenu } = Menu;
+const { Header, Content, Sider } = Layout;
+const { Title, Text, Paragraph } = Typography;
+const { Option, OptGroup } = Select;
 
 const TagSelect = () => {};
 
@@ -17,7 +34,7 @@ const CreateGroupForm = ({ visible, onCreate, onCancel }) => {
 	return (
 		<Modal
 			visible={visible}
-			title="Create a new collection"
+			title="Crear un nuevo grupo"
 			okText="Crear"
 			cancelText="Cancelar"
 			onCancel={onCancel}
@@ -71,6 +88,10 @@ const CreateGroupForm = ({ visible, onCreate, onCancel }) => {
 
 const Dashboard = () => {
 	const [visible, setVisible] = useState(false);
+	const [userData, setUserData] = useState({});
+	const [selected, setSelected] = useState("");
+	const [records, setRecords] = useState([]);
+
 	useEffect(() => {
 		fetch("/api/user/data", {
 			method: "post",
@@ -82,12 +103,42 @@ const Dashboard = () => {
 				return response.json();
 			})
 			.then(function (data) {
-				console.log("", data);
+				console.log(data);
+				setUserData(data);
+				if (data.groups.length > 0) {
+					setSelected(data.groups[0]._id);
+				}
 				// if (data.username && !data.admin) {
 				// 	this.props.history.push("/user");
 				// }
 			});
 	}, []);
+
+	useEffect(() => {
+		if (Object.keys(userData).length != 0) {
+			fetch("/api/record/list/group", {
+				method: "post",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					// groupId: "5f4af874a8ed837950ee0d16",
+					groupId: selected,
+				}),
+			})
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					console.log(data);
+					setRecords(data);
+					// setUserData(data);
+					// if (data.username && !data.admin) {
+					// 	this.props.history.push("/user");
+					// }
+				});
+		}
+	}, [selected]);
 
 	const onCreate = (values) => {
 		console.log(values);
@@ -107,15 +158,94 @@ const Dashboard = () => {
 		setVisible(false);
 	};
 
-	return (
-		<div>
+	return userData.groups && userData.groups.length > 0 ? (
+		<Layout style={{ minHeight: "100vh" }}>
+			<Sider width={200} className="site-layout-background">
+				<Menu
+					mode="inline"
+					defaultSelectedKeys={["1"]}
+					defaultOpenKeys={["sub1"]}
+					style={{ height: "100%", borderRight: 0 }}
+				>
+					<Select
+						defaultValue={userData.groups[0]._id}
+						style={{ width: 200 }}
+						onChange={(value) => {
+							setSelected(value);
+						}}
+					>
+						{userData.groups.map((group) => (
+							<Option value={group._id}>{group.name}</Option>
+						))}
+					</Select>
+					<Menu.Item key="1">option1</Menu.Item>
+					<Menu.Item key="2">option2</Menu.Item>
+					<Menu.Item key="3">option3</Menu.Item>
+					<Menu.Item key="4">option4</Menu.Item>
+				</Menu>
+			</Sider>
+			<Layout style={{ padding: "12px 24px 24px" }}>
+				<Text>ID: {selected}</Text>
+				<Content
+					className="site-layout-background"
+					style={{
+						padding: 24,
+						margin: 0,
+						minHeight: 280,
+					}}
+				>
+					<Table
+						columns={[
+							{
+								title: "Temperatura",
+								key: "temp",
+								dataIndex: "temp",
+								render: (text) =>
+									parseFloat(text) > 37 ? (
+										<Tag color="red">{text}</Tag>
+									) : (
+										<Tag color="default">{text}</Tag>
+									),
+							},
+							{
+								title: "Persona",
+								key: "user",
+								dataIndex: "user",
+							},
+							{
+								title: "Hora",
+								key: "date",
+								dataIndex: "date",
+							},
+						]}
+						dataSource={records.map((record, idx) => ({
+							key: idx,
+							temp: record.temp,
+							date: record.date,
+							user: record.user ? record.user.name : "",
+						}))}
+					/>
+				</Content>
+			</Layout>
+		</Layout>
+	) : (
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "center",
+				height: "100%",
+				textAlign: "center",
+			}}
+		>
+			<Paragraph>Aún no tienes grupos</Paragraph>
 			<Button
 				type="primary"
 				onClick={() => {
 					setVisible(true);
 				}}
 			>
-				New Collection
+				Crear Grupo
 			</Button>
 			<CreateGroupForm
 				visible={visible}

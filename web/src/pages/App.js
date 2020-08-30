@@ -8,8 +8,6 @@ import { Row, Col, Divider } from "antd";
 function App(props) {
 	const history = useHistory();
 	const [logged, setLogged] = useState(false);
-	// process incoming data
-	// Update welcomeMessage state
 	useEffect(() => {
 		fetch("/api/user/data", {
 			method: "POST",
@@ -23,10 +21,10 @@ function App(props) {
 	}, [logged]);
 	return (
 		<Row>
-			<Col span={12}>
+			<Col flex="1 1 500px">
 				<SignUp></SignUp>
 			</Col>
-			<Col span={12}>
+			<Col flex="1 1 500px">
 				<Login></Login>
 			</Col>
 		</Row>

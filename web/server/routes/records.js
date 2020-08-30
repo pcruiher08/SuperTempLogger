@@ -8,19 +8,19 @@ const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 
-router.get("/list/group", async (req, res) => {
+router.post("/list/group", async (req, res) => {
 	const { groupId } = req.body;
 	const records = await Records.find({
-		group: groupId,
-	}).exec();
-
+		group: mongoose.Types.ObjectId(groupId),
+	}).populate("user").exec();
+	
 	return res.json(records);
 });
 
 router.get("/list/user", async (req, res) => {
 	const { userId } = req.body;
 	const records = await Records.find({
-		user: userId,
+		user: mongoose.Types.ObjectId(userId),
 	}).exec();
 
 	return res.json(records);
