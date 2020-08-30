@@ -66,7 +66,6 @@ router.post("/signup", (req, res, next) => {
 
 router.post(
 	"/update",
-	connectEnsureLogin.ensureLoggedIn(),
 	async (req, res) => {
 		const { username } = req.user;
 		const {
@@ -92,7 +91,7 @@ router.post(
 	}
 );
 
-router.post("/data", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+router.post("/data", (req, res) => {
 	const { username, code, name, email, admin } = req.user;
 	return res.json({ username, code, name, email, admin });
 });

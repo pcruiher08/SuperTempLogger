@@ -6,7 +6,7 @@ const Groups = require("../models/group");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 
-router.get("/list", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
+router.get("/list", async (req, res) => {
 	const { user } = req;
 	if (user.admin) {
 		const groups = await Groups.find({
@@ -19,7 +19,6 @@ router.get("/list", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
 
 router.post(
 	"/create",
-	connectEnsureLogin.ensureLoggedIn(),
 	async (req, res) => {
 		const { admin, _id } = req.user;
 		const { groupName, users } = req.body;
@@ -49,7 +48,6 @@ router.post(
 
 router.post(
 	"/append",
-	connectEnsureLogin.ensureLoggedIn(),
 	async (req, res) => {
 		const { group } = req.body;
 		if (admin) {
