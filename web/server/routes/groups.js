@@ -22,10 +22,18 @@ router.post(
 	connectEnsureLogin.ensureLoggedIn(),
 	async (req, res) => {
 		const { admin, _id } = req.user;
-		const { groupName, users } = req.body;
+		console.log(req.body);
+		const { groupName, emails } = req.body;
+		if (!groupName || !emails) res.status(400).send("Data not provided");
+
+		const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		const filteredEmails = emails
+			.filter((email) => emailPattern.test(String(email).toLowerCase()))
+			.map((email) => email.toLowerCase());
+
 		if (admin) {
 			const userList = await Users.find({
-				email: { $in: users },
+				email: { $in: filteredEmails },
 			}).exec();
 
 			const mapped = userList.map((item) => item._id);

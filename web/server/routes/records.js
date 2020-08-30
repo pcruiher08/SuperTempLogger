@@ -34,10 +34,8 @@ router.get("/list", async (req, res) => {
 
 router.post("/create", async (req, res) => {
 	const { record } = req.body;
-	console.log("->>>", req.body);
-	console.log(record.code, record.temp);
 
-	const user = await Users.find({
+	const user = await Users.findOne({
 		code: record.code,
 	}).exec();
 
