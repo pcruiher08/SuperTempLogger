@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 
 router.post("/login", (req, res) => {
-	passport.authenticate("local", (err, user, info) => {
+	return passport.authenticate("local", (err, user, info) => {
 		if (err) {
 			throw err;
 		}
