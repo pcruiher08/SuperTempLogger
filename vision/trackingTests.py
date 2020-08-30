@@ -16,8 +16,8 @@ for text in tracker.getQRStream():
 for res in tracker.getForeheadStream():
     
     sen = str(res).encode('utf-8')
+    #comenta las siguientes dos lineas si vas a probar sin arduino
     arduino.write(sen)
-    
     rawString = arduino.readline()
     
     #lec = ( rawString.decode("utf-8") )
@@ -26,3 +26,4 @@ for res in tracker.getForeheadStream():
     
     #print(res)
     
+arduino.close()
