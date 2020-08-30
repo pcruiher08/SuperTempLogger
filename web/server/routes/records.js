@@ -14,7 +14,7 @@ router.get("/list/group", async (req, res) => {
 		group: groupId,
 	}).exec();
 
-	return res.json(groups);
+	return res.json(records);
 });
 
 router.get("/list/user", async (req, res) => {
@@ -23,11 +23,19 @@ router.get("/list/user", async (req, res) => {
 		user: userId,
 	}).exec();
 
-	return res.json(groups);
+	return res.json(records);
+});
+
+router.get("/list", async (req, res) => {
+	const records = await Records.find().exec();
+
+	return res.json(records);
 });
 
 router.post("/create", async (req, res) => {
 	const { record } = req.body;
+	console.log("->>>", req.body);
+	console.log(record.code, record.temp);
 
 	const user = await Users.find({
 		code: record.code,
@@ -38,7 +46,7 @@ router.post("/create", async (req, res) => {
 			user: user._id,
 			group: mongoose.Types.ObjectId(record.group),
 			date: new Date(),
-			temp: record.temp,
+			temp: parseFloat(record.temp),
 		},
 		async (err, group) => {
 			if (err) return res.status(500);

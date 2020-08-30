@@ -26,7 +26,7 @@ class Dashboard extends Component {
 			<div>
 				<Button
 					onClick={() => {
-						{/* fetch("api/record/create", {
+						{/* fetch("/api/record/create", {
 							method: "post",
 							headers: {
 								"Content-Type": "application/json",
@@ -36,7 +36,7 @@ class Dashboard extends Component {
 									code:
 										"5631b87a-4b77-48ba-99a4-8777baf96e45",
 									group: "5f4af874a8ed837950ee0d16",
-									temp: 97.2,
+									temp: 93.2,
 								},
 							}),
 						}).then((res) => {
