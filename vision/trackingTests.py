@@ -2,6 +2,7 @@ from FaceTracker import FaceTracker
 import serial
 import time 
 import requests
+import json
 tracker = FaceTracker()
 tracker.startCapture()
 #comenta esta linea si vas a probar sin arduino
@@ -14,9 +15,11 @@ for text in tracker.getQRStream():
     if text == "test":
         break
 '''
-url = 'https://0d0358325598.ngrok.io/api/record/create'
+endp = 'https://templogger-v2.herokuapp.com/api/record/create'
+headers = {'Content-type': 'application/json'}
 
-rawString = 10
+#rawString = 10
+
         
 for res in tracker.getForeheadStream():
     
@@ -31,10 +34,13 @@ for res in tracker.getForeheadStream():
         #lec = ( rawString.decode("utf-8") )
         
         print(rawString)
-        pload = {'record':{'code':"5631b87a-4b77-48ba-99a4-8777baf96e45", 'group':"5f4af874a8ed837950ee0d16", 'temp':'222.1'}}
 
-        r = requests.post(url, data = pload)
+        pload = {'record':{'code':"5631b87a-4b77-48ba-99a4-8777baf96e45", 'group':"5f4af874a8ed837950ee0d16", 'temp':rawString.decode('utf-8','strict')}}
+
+        r = requests.post(endp, data = json.dumps(pload), headers = headers)
+
         print(r)
+
     except:
         print("except")
     
