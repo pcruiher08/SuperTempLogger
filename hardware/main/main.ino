@@ -32,7 +32,7 @@ void loop(){
         }
         
         if(empieza){
-          readString = "("
+          readString = "(";
         }else{
           readString += c;
         }
