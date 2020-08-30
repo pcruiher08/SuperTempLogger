@@ -1,4 +1,4 @@
-
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -22,16 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressSession);
 app.use(cors());
 
-// API
-
-// app.use(express.static(path.join(__dirname, "../build")));
-// app.get("/", (req, res) => {
-// 	res.sendFile(path.join(__dirname, "../build"));
-// });
-// app.get("/login", (req, res) => {
-// 	res.sendFile(path.join(__dirname, "../build"));
-// });
-
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
 	console.log(`Server started on PORt ${port}`);
@@ -40,16 +30,19 @@ app.listen(port, () => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-const dbUri =
-	"mongodb+srv://admin:unsecreto@templogger.4dihh.mongodb.net/templogger?retryWrites=true&w=majority";
-mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use("/api/user", userRouter);
 app.use("/api/group", groupRouter);
 
-app.get("*", (req, res) => {
-	// change to prod
-	if (req.originalUrl !== "/login")
-		proxy.web(req, res, { target: "http://localhost:3000/" });
-	// res.sendFile(path.join(__dirname + "/../build/index.html"));
-});
+if (process.env.NODE_ENV && process.env.NODE_ENV !== "development") {
+	app.use(express.static(path.join(__dirname, "../build")));
+	app.get("*", (req, res) => {
+		res.sendFile(path.join(__dirname, "../build"));
+	});
+} else {
+	app.get("*", (req, res) => {
+		if (req.originalUrl !== "/login")
+			proxy.web(req, res, { target: "http://localhost:3000/" });
+	});
+}
