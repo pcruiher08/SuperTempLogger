@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -30,19 +30,24 @@ app.listen(port, () => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DB_URI, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
 
 app.use("/api/user", userRouter);
 app.use("/api/group", groupRouter);
 
-if (process.env.NODE_ENV && process.env.NODE_ENV !== "development") {
-	app.use(express.static(path.join(__dirname, "../build")));
-	app.get("*", (req, res) => {
-		res.sendFile(path.join(__dirname, "../build"));
-	});
-} else {
+if (process.env.NODE_ENV && process.env.NODE_ENV === "development") {
 	app.get("*", (req, res) => {
 		if (req.originalUrl !== "/login")
 			proxy.web(req, res, { target: "http://localhost:3000/" });
+	});
+} else {
+	app.use(express.static(path.join(__dirname, "../build")));
+	app.all("/*", (req, res) => {
+		if (req.originalUrl !== "/login")
+			res.sendFile(path.resolve(__dirname, "../build", "index.html"));
+		// res.sendFile(path.join(__dirname, "../build"));
 	});
 }
