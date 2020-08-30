@@ -86,14 +86,16 @@ const Dashboard = () => {
 	const [userData, setUserData] = useState(context ? context.user : {});
 	const [key, setKey] = useState("1");
 	const [selected, setSelected] = useState(
-		context.user && context.user.groups.length > 0 ? context.user.groups[0]._id : ""
+		context.user && context.user.groups.length > 0
+			? context.user.groups[0]._id
+			: ""
 	);
 	const [records, setRecords] = useState([]);
 	const [trigger, setTrigger] = useState(false);
 	const history = useHistory();
 
 	useEffect(() => {
-		if (Object.keys(userData).length != 0) {
+		if (userData && Object.keys(userData).length != 0) {
 			fetch("/api/record/list/group", {
 				method: "post",
 				headers: {
@@ -152,7 +154,11 @@ const Dashboard = () => {
 					mode="inline"
 					defaultSelectedKeys={["1"]}
 					style={{ height: "100%", borderRight: 0 }}
-					onClick={({ key: k }) => setKey(k)}
+					onClick={({ key: k }) => {
+						if (k == "1" || k == "2") {
+							setKey(k);
+						}
+					}}
 				>
 					<Select
 						defaultValue={userData.groups[0]._id}

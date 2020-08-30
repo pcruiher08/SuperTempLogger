@@ -9,23 +9,23 @@ import { Row, Col, Divider } from "antd";
 function App(props) {
 	const history = useHistory();
 	const context = useContext(UserContext);
-	// useEffect(() => {
-	// 	if (!context.loggedIn) {
-	// 		fetch("/api/user/data", {
-	// 			method: "POST",
-	// 		})
-	// 			.then(function (response) {
-	// 				if (response.status == 200) {
-	// 					return response.json();
-	// 				}
-	// 			})
-	// 			.then(function (data) {
-	// 				context.setUser(data);
-	// 				history.push("/user");
-	// 				return;
-	// 			});
-	// 	}
-	// }, []);
+	useEffect(() => {
+		if (!context.loggedIn) {
+			fetch("/api/user/data", {
+				method: "POST",
+			})
+				.then(function (response) {
+					if (response.status == 200) {
+						return response.json();
+					}
+				})
+				.then(function (data) {
+					context.setUser(data);
+					history.push("/user");
+					return;
+				});
+		}
+	}, []);
 	console.log("->>", context);
 	if (context.loggedIn) history.push("/user");
 	return (

@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import {
-	HashRouter as Router,
-	Route,
-	Redirect,
-	Link,
-} from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import Login from "./pages/auth/Login";
 import App from "./pages/App";
@@ -14,9 +9,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import "antd/dist/antd.css";
 import "./index.css";
 import { Layout, Menu, Button } from "antd";
-import {
-	SettingOutlined,
-} from "@ant-design/icons";
+import { SettingOutlined } from "@ant-design/icons";
 
 const { SubMenu } = Menu;
 const { Header, Content, Footer } = Layout;
@@ -200,6 +193,9 @@ class Root extends Component {
 									height: "100%",
 								}}
 							>
+								{!this.state.loggedIn ? null : (
+									<Redirect to="/" />
+								)}
 								<Route exact path="/" component={App} />
 								<Route exact path="/user" component={User} />
 								<Route
@@ -207,7 +203,7 @@ class Root extends Component {
 									path="/dashboard"
 									component={Dashboard}
 								/>
-								<Redirect from='/login' to="/" />
+								<Redirect from="/login" to="/" />
 							</div>
 						</Content>
 						<Footer
