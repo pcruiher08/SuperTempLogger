@@ -15,8 +15,6 @@ import "antd/dist/antd.css";
 import "./index.css";
 import { Layout, Menu, Button } from "antd";
 import {
-	MailOutlined,
-	AppstoreOutlined,
 	SettingOutlined,
 } from "@ant-design/icons";
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { withRouter } from "react-router";
 import {
 	Button,
 	Modal,
@@ -10,22 +9,15 @@ import {
 	Select,
 	Layout,
 	Menu,
-	Breadcrumb,
 	Table,
 	Tag,
 } from "antd";
-import {
-	UserOutlined,
-	LaptopOutlined,
-	NotificationOutlined,
-} from "@ant-design/icons";
-import { json } from "body-parser";
+
 import { UserContext } from "../../index";
 import { useHistory, Redirect } from "react-router-dom";
-const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
-const { Title, Text, Paragraph } = Typography;
-const { Option, OptGroup } = Select;
+const { Content, Sider } = Layout;
+const { Text, Paragraph } = Typography;
+const { Option } = Select;
 
 const TagSelect = () => {};
 
@@ -90,13 +82,11 @@ const CreateGroupForm = ({ visible, onCreate, onCancel }) => {
 
 const Dashboard = () => {
 	const context = useContext(UserContext);
-	if (!context.loggedIn) {
-		return <Redirect to="/" />;
-	}
 	const [visible, setVisible] = useState(false);
-	const [userData, setUserData] = useState(context.user);
+	const [userData, setUserData] = useState(context ? context.user : {});
+	const [key, setKey] = useState("1");
 	const [selected, setSelected] = useState(
-		context.user.groups.length > 0 ? context.user.groups[0]._id : ""
+		context.user && context.user.groups.length > 0 ? context.user.groups[0]._id : ""
 	);
 	const [records, setRecords] = useState([]);
 	const [trigger, setTrigger] = useState(false);
@@ -121,6 +111,10 @@ const Dashboard = () => {
 				});
 		}
 	}, [selected]);
+
+	if (!context.loggedIn) {
+		return <Redirect to="/" />;
+	}
 
 	const onCreate = (values) => {
 		fetch("/api/group/create", {
@@ -158,6 +152,7 @@ const Dashboard = () => {
 					mode="inline"
 					defaultSelectedKeys={["1"]}
 					style={{ height: "100%", borderRight: 0 }}
+					onClick={({ key: k }) => setKey(k)}
 				>
 					<Select
 						defaultValue={userData.groups[0]._id}
@@ -203,37 +198,56 @@ const Dashboard = () => {
 						minHeight: 280,
 					}}
 				>
-					<Table
-						columns={[
-							{
-								title: "Temperatura",
-								key: "temp",
-								dataIndex: "temp",
-								render: (text) =>
-									parseFloat(text) > 37 ? (
-										<Tag color="red">{text}</Tag>
-									) : (
-										<Tag color="default">{text}</Tag>
-									),
-							},
-							{
-								title: "Persona",
-								key: "user",
-								dataIndex: "user",
-							},
-							{
-								title: "Hora",
-								key: "date",
-								dataIndex: "date",
-							},
-						]}
-						dataSource={records.map((record, idx) => ({
-							key: idx,
-							temp: record.temp,
-							date: record.date,
-							user: record.user ? record.user.name : "",
-						}))}
-					/>
+					{(() => {
+						if (key == "1") {
+							return (
+								<Table
+									columns={[
+										{
+											title: "Temperatura",
+											key: "temp",
+											dataIndex: "temp",
+											render: (text) =>
+												parseFloat(text) > 37 ? (
+													<Tag color="red">
+														{text}
+													</Tag>
+												) : (
+													<Tag color="default">
+														{text}
+													</Tag>
+												),
+										},
+										{
+											title: "Persona",
+											key: "user",
+											dataIndex: "user",
+										},
+										{
+											title: "Hora",
+											key: "date",
+											dataIndex: "date",
+										},
+									]}
+									dataSource={records.map((record, idx) => ({
+										key: idx,
+										temp: record.temp,
+										date: record.date,
+										user: record.user
+											? record.user.name
+											: "",
+									}))}
+								/>
+							);
+						} else if (key == "2") {
+							return (
+								<img
+									src="https://www.researchgate.net/profile/Rebecca_Harris5/publication/258504178/figure/fig5/AS:669657803526148@1536670270221/Frequency-histogram-of-field-body-temperature-in-Phaulacridium-vittatum-doi.ppm"
+									alt=""
+								/>
+							);
+						}
+					})()}
 				</Content>
 			</Layout>
 		</Layout>
