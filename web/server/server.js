@@ -14,6 +14,7 @@ const httpProxy = require("http-proxy");
 const User = require("./models/user");
 const userRouter = require("./routes/users");
 const groupRouter = require("./routes/groups");
+const recordRouter = require("./routes/records");
 const proxy = httpProxy.createServer({});
 const app = express();
 
@@ -32,6 +33,7 @@ mongoose.connect(process.env.DB_URI, {
 
 app.use("/api/user", userRouter);
 app.use("/api/group", groupRouter);
+app.use("/api/record", recordRouter);
 
 if (process.env.NODE_ENV && process.env.NODE_ENV === "development") {
 	app.get("*", (req, res) => {

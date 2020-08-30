@@ -18,6 +18,6 @@ const Record = new Schema({
 	},
 });
 
-const Groups = mongoose.model("Record", Group, "Records");
+const Records = mongoose.model("Record", Record, "Records");
 
-module.exports = Groups;
+module.exports = Records;
