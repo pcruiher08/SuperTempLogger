@@ -1,4 +1,10 @@
-import React, { Component, useState, useEffect, useContext } from "react";
+import React, {
+	Component,
+	useState,
+	useEffect,
+	useContext,
+	useRef,
+} from "react";
 import {
 	Spin,
 	Form,
@@ -16,44 +22,10 @@ import { UserContext } from "../index";
 const { Title, Text, Paragraph } = Typography;
 
 const User = () => {
-	console.log(
-		"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	);
 	const history = useHistory();
 	const context = useContext(UserContext);
 	const [userData, setUserData] = useState(context.user || {});
-	if (!context.loggedIn) return <Redirect to="/" />;
-	// if (!context.loggedIn) {
-	// 	fetch("/api/user/data", {
-	// 		method: "post",
-	// 		headers: {
-	// 			"Content-Type": "application/json",
-	// 		},
-	// 	})
-	// 		.then(function (response) {
-	// 			return response.json();
-	// 		})
-	// 		.then(function (data) {
-	// 			context.setUser(data);
-	// 		})
-	// 		.catch((err) => {
-	// 			history.push("/");
-	// 		});
-	// }
-
-	console.log(context.user);
-
-	// if (Object.keys(userData).length === 0)
-	// 	return (
-	// 		<Spin
-	// 			indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-	// 		/>
-	// 	);
-
-	if (!context.user) {
-		console.log("?????????????????????????????");
-		history.push("/");
-	}
+	if (!context.loggedIn || !context.user) return <Redirect to="/" />;
 
 	return (
 		<Row>
@@ -64,7 +36,11 @@ const User = () => {
 				lg={{ span: 12, offset: 6 }}
 			>
 				<div style={{ textAlign: "center", padding: "24px" }}>
-					<QRCode value={context.user.code} size={300} />
+					<QRCode
+						value={context.user.code}
+						size={300}
+						includeMargin={true}
+					/>
 					<Paragraph>Nombre: {context.user.name}</Paragraph>
 					<Paragraph>
 						Nombre de usuario: {context.user.username}
