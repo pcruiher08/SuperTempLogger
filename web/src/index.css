@@ -1,0 +1,4 @@
+.menu-nohover:hover, .menu-nohover {
+	background-color: transparent !important;
+	color: inherit !important;
+}

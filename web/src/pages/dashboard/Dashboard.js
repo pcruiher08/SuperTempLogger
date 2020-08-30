@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router";
 import {
 	Button,
@@ -12,7 +12,7 @@ import {
 	Menu,
 	Breadcrumb,
 	Table,
-	Tag
+	Tag,
 } from "antd";
 import {
 	UserOutlined,
@@ -20,6 +20,8 @@ import {
 	NotificationOutlined,
 } from "@ant-design/icons";
 import { json } from "body-parser";
+import { UserContext } from "../../index";
+import { useHistory, Redirect } from "react-router-dom";
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -87,32 +89,18 @@ const CreateGroupForm = ({ visible, onCreate, onCancel }) => {
 };
 
 const Dashboard = () => {
+	const context = useContext(UserContext);
+	if (!context.loggedIn) {
+		return <Redirect to="/" />;
+	}
 	const [visible, setVisible] = useState(false);
-	const [userData, setUserData] = useState({});
-	const [selected, setSelected] = useState("");
+	const [userData, setUserData] = useState(context.user);
+	const [selected, setSelected] = useState(
+		context.user.groups.length > 0 ? context.user.groups[0]._id : ""
+	);
 	const [records, setRecords] = useState([]);
-
-	useEffect(() => {
-		fetch("/api/user/data", {
-			method: "post",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-			.then(function (response) {
-				return response.json();
-			})
-			.then(function (data) {
-				console.log(data);
-				setUserData(data);
-				if (data.groups.length > 0) {
-					setSelected(data.groups[0]._id);
-				}
-				// if (data.username && !data.admin) {
-				// 	this.props.history.push("/user");
-				// }
-			});
-	}, []);
+	const [trigger, setTrigger] = useState(false);
+	const history = useHistory();
 
 	useEffect(() => {
 		if (Object.keys(userData).length != 0) {
@@ -122,7 +110,6 @@ const Dashboard = () => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					// groupId: "5f4af874a8ed837950ee0d16",
 					groupId: selected,
 				}),
 			})
@@ -130,18 +117,12 @@ const Dashboard = () => {
 					return response.json();
 				})
 				.then(function (data) {
-					console.log(data);
 					setRecords(data);
-					// setUserData(data);
-					// if (data.username && !data.admin) {
-					// 	this.props.history.push("/user");
-					// }
 				});
 		}
 	}, [selected]);
 
 	const onCreate = (values) => {
-		console.log(values);
 		fetch("/api/group/create", {
 			method: "post",
 			headers: {
@@ -149,8 +130,20 @@ const Dashboard = () => {
 			},
 			body: JSON.stringify(values),
 		})
-			.then((res) => {
-				console.log(res);
+			.then(async (res) => {
+				await fetch("/api/user/data", {
+					method: "POST",
+				})
+					.then((response) => {
+						if (response.status == 200) {
+							return response.json();
+						}
+					})
+					.then((data) => {
+						context.setUser(data);
+						setUserData(data);
+						return;
+					});
 			})
 			.catch((err) => {
 				throw err;
@@ -178,10 +171,29 @@ const Dashboard = () => {
 							<Option value={group._id}>{group.name}</Option>
 						))}
 					</Select>
-					<Menu.Item key="1">option1</Menu.Item>
-					<Menu.Item key="2">option2</Menu.Item>
+					<Button
+						type="primary"
+						style={{
+							width: "100%",
+							margin: "6px 0",
+						}}
+						onClick={() => {
+							setVisible(true);
+						}}
+					>
+						Crear Grupo
+					</Button>
+					<CreateGroupForm
+						visible={visible}
+						onCreate={onCreate}
+						onCancel={() => {
+							setVisible(false);
+						}}
+					/>
+					<Menu.Item key="1">Registros</Menu.Item>
+					{/* <Menu.Item key="2">option2</Menu.Item>
 					<Menu.Item key="3">option3</Menu.Item>
-					<Menu.Item key="4">option4</Menu.Item>
+					<Menu.Item key="4">option4</Menu.Item> */}
 				</Menu>
 			</Sider>
 			<Layout style={{ padding: "12px 24px 24px" }}>

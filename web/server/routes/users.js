@@ -64,6 +64,11 @@ router.post("/signup", (req, res, next) => {
 	return res.status(response.code).send(response.msg);
 });
 
+router.get("/logout", function (req, res) {
+	req.logout();
+	res.redirect("/");
+});
+
 router.post(
 	"/update",
 	connectEnsureLogin.ensureLoggedIn(),
